@@ -1,9 +1,9 @@
 # ForgePanel
 ForgePanel is a free and open-source management solution for local 1.12+ Minecraft Servers.
 
-Currently ForgePanel is in early stages and not ready for production. We will launch ForgePanel as soon as it is ready.
-  📖 [ForgePanel Documentation](https://fpp.gitbook.io/fp)
-  ForgePanel will be Windows exclusive on launch.
+Currently ForgePanel is in early stages and not ready for production. We will launch ForgePanel as soon as it is ready.__
+📖 [ForgePanel Documentation](https://fpp.gitbook.io/fp)__
+ForgePanel will be Windows exclusive on launch.
 ____________________________________________________________________________
 
 Roadmap:
