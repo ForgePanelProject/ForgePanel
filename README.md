@@ -6,18 +6,18 @@ ____________________________________________________________________________
 
 Roadmap:
 
-Beta Release 0.1 (Will only contain Basic functions. Supported on launch are Forge and Vanilla)
+Alpha Release A.1 (Will only contain Basic functions. Supported on launch are Forge and Vanilla)
 
-Neoforge Update 0.2 (Adding Neoforge to ForgePanel)
+Neoforge Update A.2 (Adding Neoforge to ForgePanel)
 
-Tunnel Update 0.3 (Will add zrok and maybe ngrok support inside of the program)
+Tunnel Update A.3 (Will add zrok and maybe ngrok support inside of the program)
 
-Modrinth Update 0.4 (Adding support for .mrpack files, Modrith Integration)
+Modrinth Update B.1 (Adding support for .mrpack files, Modrith Integration)
 
 Modloader update(s) (Adding Fabric and Paper support. Maybe even more.)
+
+Full release 1.0
 
 +Feature updates
 
 +Minecraft version updates
-
-Full release 1.0
