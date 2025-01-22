@@ -7,7 +7,7 @@ ____________________________________________________________________________
 
 Roadmap:
 
-Beta Release b.1.0 (Will only contain Basic functions. Supported on launch are Forge NeoForge and Vanilla)
+Beta Release b.1.0 (Will only contain Basic functions. Supported on launch are Forge, NeoForge and Vanilla)
 
 Tunnel Update b.2.0 (Will add zrok and maybe ngrok support inside of the program)
 
