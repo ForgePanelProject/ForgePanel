@@ -1,0 +1,5 @@
+Subject: Files in SystemUIcon Direcory excluding this file
+Licence: SystemUIcons are licenced under Unlicence
+Repo: github.com/CoreyGinnivan/system-uicons
+
+Files may have been modified
