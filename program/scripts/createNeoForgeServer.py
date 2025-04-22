@@ -45,7 +45,7 @@ def __DownloadInstaller__(MinecraftVersion, version, ServerPath):
 
 def __install__(ServerPath,NeoforgeVersion,MinecraftVersion):
     Popen(f'cd "{ServerPath}" && java -jar neoforge-{NeoforgeVersion}-installer.jar --installServer', shell=True)
-    if CheckInstall(os.path.join(ServerPath, "installer.log")):
+    if CheckInstall(os.path.join(ServerPath, f"neoforge-{NeoforgeVersion}-installer.jar.log")):
         os.remove(os.path.join(ServerPath, f"neoforge-{NeoforgeVersion}-installer.jar"))
         __Done__(ServerPath, MinecraftVersion, NeoforgeVersion, False)
         

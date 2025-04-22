@@ -48,7 +48,7 @@ def __install__(ForgeVersion, ServerPath, MinecraftVersion):
     print("Install1")
     Popen(f'cd "{ServerPath}" && java -jar forge-{ForgeVersion}-installer.jar --installServer', shell=True)
     print("Install2")
-    if checkInstall(os.path.join(ServerPath, "installer.log")):
+    if checkInstall(os.path.join(ServerPath, f"forge-{ForgeVersion}-installer.jar.log")):
         os.remove(os.path.join(ServerPath, f"forge-{ForgeVersion}-installer.jar"))
         __done__(ServerPath, MinecraftVersion, ForgeVersion, False)
 

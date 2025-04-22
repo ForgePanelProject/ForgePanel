@@ -1,167 +1,189 @@
 #Sorry for the terrible code, at least it works. somehow.
-#why are the dashboard widgets for system resource usage commented out?
-LoadVar = True
-Startup = True
+from shutil import which as InstallCheck
 import customtkinter as ctk
-from customtkinter import CTkButton, CTkLabel, CTkFrame, CTkEntry, CTkOptionMenu
-from time import sleep
-from PIL import Image
-import subprocess
-import psutil
-from threading import Thread
-from CTkMessagebox import CTkMessagebox
-from scripts.createForgeServer import download as downloadForge
-from scripts.createForgeServer import checkInstall as checkForgeInstall
-from scripts.createNeoForgeServer import Download as downloadNeoForge
-from scripts.createNeoForgeServer import CheckInstall as checkNeoForgeInstall
-from scripts.createVanillaServer import Download as downloadVanilla
-from scripts.SettingsPropertiesConverter import convertSettingsProperties
-from scripts.getPlayerData import getPlayerData
-from webbrowser import open as OpenURL
-from re import search as StringSearch
-import platform
-import requests
-import json
-import os
 from os import path
-from shutil import copy as CopyFile
-from shutil import copytree as CopyFolder
-from shutil import rmtree as RemoveFolder
-from io import BytesIO
-
-
-if platform.system()=="Windows":
-    import ctypes
-    ctypes.windll.shcore.SetProcessDpiAwareness(1)
-if LoadVar:
-    if Startup:
-        Server = ""
-        FPPath = f"{path.dirname(path.abspath(__file__))}"
-        with open(path.join(FPPath,"settings.json"), "r") as fpsettings:
-            ProgramSettings = json.load(fpsettings)
-        with open(path.join(FPPath,"lang",f"{ProgramSettings['lang']}.json"), "r") as langjson:
-            lang = json.load(langjson)
-        #languageLoading:
-            #Menubars and essential page components:
-                #Titles:
-        HomePageTitle = lang["HomePageTitle"]
-        ServerCreateTitle = lang["ServerCreateTitle"]
-        ConfigTitle = lang["ConfigTitle"]
-        FolderTitle = lang["FolderTitle"]
-        SettingsTitle = lang["SettingsTitle"]
-                #Pages
-                    #ServerDownload
-        ServerForgeDownloadText = lang["ServerForgeDownloadText"]
-        ServerNeoForgeDownloadText = lang["ServerNeoForgeDownloadText"]
-        ServerVanillaDownloadText = lang["ServerVanillaDownloadText"]
-        ServerDownloadErrorText = lang["ServerDownloadErrorText"]
-                    #HomePage:
-        Greeting = lang["Greeting"]
-        CreateServerTXT = lang["CreateServerTXT"]
-        ChooseServerTXT = lang["ChooseServerTXT"]
-        SelectServerEntry = lang["SelectServerEntry"]
-        NameEntryTxt = lang["NameEntryTxt"]
-        ErrorServerNameDuplicate = lang["ErrorServerNameDuplicate"]
-        ErrorServerNameForbiddenCharacters = lang["ErrorServerNameForbiddenCharacters"]
-        ErrorServerNameEmpty = lang["ErrorServerNameEmpty"]
-                    #ServerSetupPage:
-                        #Intro:
-        NewServerGreetingTxt = lang["NewServerGreetingTxt"]
-        SetupIntroTitle = lang["SetupIntroTitle"]
-                        #Quick Setup:
-        QuickSetupTxt = lang["QuickSetupTxt"]
-                        #Advanced Setup:
-        AdvancedSetupTxt = lang["AdvancedSetupTxt"]
-                        #Warning:
-        OnlineModeWarnTxt= lang["OnlineModeWarnTxt"]
-        WhitelistInfoPageTxt= lang["WhitelistInfoPageTxt"]
-        DeactivateWhitelistButtonTxt = lang["DeactivateWhitelistButtonTxt"]
-        NoOnlineModeProceed = lang["NoOnlineModeProceed"]
-        WarningServerDelete = lang["WarningServerDelete"]
-                    #DashboardPage:
-        DashboardPageTitle = lang["DashboardPageTitle"]
-        ChangeButtonTxt = lang["ChangeButtonTxt"]
-        ResetButtonTxt = lang["ResetButtonTxt"]
-        DeleteButtonTxt = lang["DeleteButtonTxt"]
-                    #ConsolePage:
-        ConsoleTitle = lang["ConsoleTitle"]
-        EnterCommandPlaceholder = lang["EnterCommandPlaceholder"]
-        SendCommandTxt = lang["SendCommandTxt"]
-                    #SettingsPage:
-        SettingsLangChangeTitle = lang["SettingsLangChangeTitle"]
-                    #WhiteListPage:
-        WhitelistTitle = lang["WhitelistTitle"]
-        WhitelistAddPlayerTxt = lang["WhitelistAddPlayerTxt"]
-        WhitelistAddPlayerNameTxt = lang["WhitelistAddPlayerNameTxt"]
-        WhitelistRemovePlayerTxt = lang["WhitelistRemovePlayerTxt"]
-                    #PlayersPage:
-        PlayersTitle = lang["PlayersTitle"]
-        BanTxt = lang["BanTxt"]
-        UnbanTxt = lang["UnbanTxt"]
-                    #misc:
-        HelpButtonTXT = lang["HelpButtonTxt"]
-        NextButtonTXT = lang["NextButtonTXT"]
-        FeedbackButtonText = lang["FeedbackButtonText"]
-        LangChangeTitle = lang["LangChangeTitle"]
-        LangChangeInfoTxt = lang["LangChangeInfoTxt"]
-        Cancel = lang["Cancel"]
-        ContinueAnyway = lang["ContinueAnyway"]
-        NeedHelpTxt = lang["NeedHelpTxt"]
-        DocumentationTxt = lang["DocumentationTxt"]
-        KeepModsTxt = lang["KeepModsTxt"]
-        KeepWorldTxt = lang["KeepWorldTxt"]
-        KeepConfigsTxt =  lang["KeepConfigsTxt"]
+from webbrowser import open as OpenURL
+java_path = InstallCheck("java")
+print(java_path)
+if java_path:
+    print(java_path)
+    from customtkinter import CTkButton, CTkLabel, CTkFrame, CTkEntry, CTkOptionMenu
+    from time import sleep
+    from PIL import Image
+    import subprocess
+    import psutil
+    from threading import Thread
+    from CTkMessagebox import CTkMessagebox
+    from scripts.createForgeServer import download as downloadForge
+    from scripts.createForgeServer import checkInstall as checkForgeInstall
+    from scripts.createNeoForgeServer import Download as downloadNeoForge
+    from scripts.createNeoForgeServer import CheckInstall as checkNeoForgeInstall
+    from scripts.createVanillaServer import Download as downloadVanilla
+    from scripts.SettingsPropertiesConverter import convertSettingsProperties
+    from scripts.getPlayerData import getPlayerData
+    from re import search as StringSearch
+    import platform
+    import requests
+    import json
+    import os
+    from shutil import copy as CopyFile
+    from shutil import copytree as CopyFolder
+    from shutil import rmtree as RemoveFolder
+    from shutil import make_archive
+    from shutil import unpack_archive
+    from shutil import move as MoveFile
+    from io import BytesIO
+    import datetime
+    
+    if platform.system()=="Windows":
+        import ctypes
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    Server = ""
+    FPPath = f"{path.dirname(path.abspath(__file__))}"
+    if path.exists(path.join(FPPath,"temp")): RemoveFolder(path.join(FPPath,"temp"))
+    with open(path.join(FPPath,"settings.json"), "r") as fpsettings:
+        ProgramSettings = json.load(fpsettings)
+    with open(path.join(FPPath,"lang",f"{ProgramSettings['lang']}.json"), "r") as langjson:
+        lang = json.load(langjson)
+    #languageLoading:
+        #Menubars and essential page components:
+            #Titles:
+    HomePageTitle = lang["HomePageTitle"]
+    ServerCreateTitle = lang["ServerCreateTitle"]
+    ConfigTitle = lang["ConfigTitle"]
+    FolderTitle = lang["FolderTitle"]
+    SettingsTitle = lang["SettingsTitle"]
+            #Pages
+                #ServerDownload
+    ServerForgeDownloadText = lang["ServerForgeDownloadText"]
+    ServerNeoForgeDownloadText = lang["ServerNeoForgeDownloadText"]
+    ServerVanillaDownloadText = lang["ServerVanillaDownloadText"]
+    ServerDownloadErrorText = lang["ServerDownloadErrorText"]
+                #HomePage:
+    Greeting = lang["Greeting"]
+    CreateServerTXT = lang["CreateServerTXT"]
+    ChooseServerTXT = lang["ChooseServerTXT"]
+    SelectServerEntry = lang["SelectServerEntry"]
+    NameEntryTxt = lang["NameEntryTxt"]
+    ErrorServerNameDuplicate = lang["ErrorServerNameDuplicate"]
+    ErrorServerNameForbiddenCharacters = lang["ErrorServerNameForbiddenCharacters"]
+    ErrorServerNameEmpty = lang["ErrorServerNameEmpty"]
+                #ServerSetupPage:
+                    #Intro:
+    NewServerGreetingTxt = lang["NewServerGreetingTxt"]
+    SetupIntroTitle = lang["SetupIntroTitle"]
+                    #Quick Setup:
+    QuickSetupTxt = lang["QuickSetupTxt"]
+                    #Advanced Setup:
+    AdvancedSetupTxt = lang["AdvancedSetupTxt"]
+                    #Warning:
+    OnlineModeWarnTxt= lang["OnlineModeWarnTxt"]
+    WhitelistInfoPageTxt= lang["WhitelistInfoPageTxt"]
+    DeactivateWhitelistButtonTxt = lang["DeactivateWhitelistButtonTxt"]
+    NoOnlineModeProceed = lang["NoOnlineModeProceed"]
+    WarningServerDelete = lang["WarningServerDelete"]
+                #DashboardPage:
+    DashboardPageTitle = lang["DashboardPageTitle"]
+    ChangeButtonTxt = lang["ChangeButtonTxt"]
+    ResetButtonTxt = lang["ResetButtonTxt"]
+    DeleteButtonTxt = lang["DeleteButtonTxt"]
+                #ConsolePage:
+    ConsoleTitle = lang["ConsoleTitle"]
+    EnterCommandPlaceholder = lang["EnterCommandPlaceholder"]
+    SendCommandTxt = lang["SendCommandTxt"]
+                #SettingsPage:
+    SettingsLangChangeTitle = lang["SettingsLangChangeTitle"]
+    SettingsBackupTitle = lang["SettingsBackupTitle"]
+    SettingsBackupCreateButtonTxt = lang["SettingsBackupCreateButtonTxt"]
+    SettingsBackupImportButtonTxt = lang["SettingsBackupImportButtonTxt"]
+    SettingsRestoreWarnTxt = lang["SettingsRestoreWarnTxt"]
+    SettingsRestoreUncompatibleTxt = lang["SettingsRestoreUncompatibleTxt"]
+                #WhiteListPage:
+    WhitelistTitle = lang["WhitelistTitle"]
+    WhitelistAddPlayerTxt = lang["WhitelistAddPlayerTxt"]
+    WhitelistAddPlayerNameTxt = lang["WhitelistAddPlayerNameTxt"]
+    WhitelistRemovePlayerTxt = lang["WhitelistRemovePlayerTxt"]
+                #PlayersPage:
+    PlayersTitle = lang["PlayersTitle"]
+    BanTxt = lang["BanTxt"]
+    UnbanTxt = lang["UnbanTxt"]
+                #misc:
+    HelpButtonTXT = lang["HelpButtonTxt"]
+    NextButtonTXT = lang["NextButtonTXT"]
+    FeedbackButtonText = lang["FeedbackButtonText"]
+    LangChangeTitle = lang["LangChangeTitle"]
+    LangChangeInfoTxt = lang["LangChangeInfoTxt"]
+    Cancel = lang["Cancel"]
+    ContinueAnyway = lang["ContinueAnyway"]
+    NeedHelpTxt = lang["NeedHelpTxt"]
+    DocumentationTxt = lang["DocumentationTxt"]
+    KeepModsTxt = lang["KeepModsTxt"]
+    KeepWorldTxt = lang["KeepWorldTxt"]
+    KeepConfigsTxt =  lang["KeepConfigsTxt"]
+    try:
+        VERSION_DATA = requests.get("https://raw.githubusercontent.com/ForgePanelProject/ForgePanel/refs/heads/main/webdata/VersionList.json").json()    
+        VERSION_DATA = dict(reversed(VERSION_DATA.items()))
+        if not path.exists(path.join(FPPath,"LocalWebData")):
+            os.makedirs(path.join(FPPath,"LocalWebData"))
+        with open(path.join(FPPath,"LocalWebData","VersionList.json"), "w") as file:
+            json.dump(VERSION_DATA, file)
+    except:
         try:
-            VERSION_DATA = requests.get("https://raw.githubusercontent.com/ForgePanelProject/ForgePanel/refs/heads/main/webdata/VersionList.json").json()    
-            VERSION_DATA = dict(reversed(VERSION_DATA.items()))
-            with open(path.join(FPPath,"LocalWebData","VersionList.json"), "w") as file:
-                json.dump(VERSION_DATA, file)
+            print("Failed to get version data")
+            if path.exists(path.join(FPPath,"LocalWebData")):
+                with open(path.join(FPPath,"LocalWebData","VersionList.json"), "r") as file:
+                    VERSION_DATA = json.load(file)
         except:
-            try:
-                print("Failed to get version data")
-                if path.exists(path.join(FPPath,"LocalWebData")):
-                    with open(path.join(FPPath,"LocalWebData","VersionList.json"), "r") as file:
-                        VERSION_DATA = json.load(file)
-            except:
-                GUI = ctk.CTk(fg_color="white")
-                GUI.title("ForgePanel - Fatal Error")
-                ErrorLabel = ctk.CTkLabel(GUI, text="Failed to retrive version data from GitHub. \nVisit the documentation for additional details.", font=("Arial", 15))
-                ErrorLabel.pack(padx=10, pady=10)
-                button = ctk.CTkButton(GUI, text="Close", command=exit())
-                button.pack(padx=10, pady=10)
-                DocsButton = ctk.CTkButton(GUI, text="Documentation", command=lambda: OpenURL("https://fpp.gitbook.io/fp/troubleshooting/failed-to-retrive-version-data-from-github"))
-                GUI.mainloop()
+            GUI = ctk.CTk(fg_color="white")
+            GUI.title("ForgePanel - Fatal Error")
+            GUI.iconbitmap(path.join(FPPath,"assets","ForgePanel","FP.ico"))
+            ErrorLabel = ctk.CTkLabel(GUI, text="Failed to retrive version data from GitHub. \nVisit the documentation for additional details.", font=("Futura", 15))
+            ErrorLabel.pack(padx=10, pady=10)
+            button = ctk.CTkButton(GUI, text="Close", command=exit())
+            button.pack(padx=10, pady=10)
+            DocsButton = ctk.CTkButton(GUI, text="Documentation", command=lambda: OpenURL("https://fpp.gitbook.io/fp/troubleshooting/failed-to-retrive-version-data-from-github"))
+            GUI.mainloop()
 
-        def UpdateCheck(*args):
-            try:
-                latest_version = requests.get("https://raw.githubusercontent.com/ForgePanelProject/ForgePanel/refs/heads/main/program/settings.json").json()
-                if latest_version['ForgePanelVersion'] != ProgramSettings['ForgePanelVersion']:
-                    UpdatePopup = CTkMessagebox(
-                        title="Update Available!", 
-                        message=f"New version {latest_version['ForgePanelVersion']} is available.\nYou are running {ProgramSettings['ForgePanelVersion']}",
-                        icon="info",
-                        option_1="Take me there",
-                        option_2="Remind me later",
-                    )
-                    if UpdatePopup.get() == "Take me there":
-                        OpenURL("https://github.com/ForgePanelProject/ForgePanel/releases")
-            except:
-                print("Failed to check for updates")
-        svmem = psutil.virtual_memory()
-        Page = ""
-        UIconPath = path.join(FPPath, "assets", "SystemUIcon")
-        if not path.exists(path.join(FPPath, "Servers")):
-            os.makedirs(path.join(FPPath, "Servers"))
-        ServerList = os.listdir(path.join(FPPath, "Servers"))
-        ServerList.insert(0, SelectServerEntry)
-        ListLen = len(ServerList)
-        if path.exists(path.join(FPPath,"temp")):
-            RemoveFolder(path.join(FPPath,"temp"))
-        Startup = False
-        ServerProcess = None
-        ServerState = "Offline"
-        ServerSoftware = ""
-        DoUpdateCheck = True
+    def UpdateCheck(*args):
+        try:
+            latest_version = requests.get("https://raw.githubusercontent.com/ForgePanelProject/ForgePanel/refs/heads/main/program/settings.json").json()
+            if latest_version['ForgePanelVersion'] != ProgramSettings['ForgePanelVersion']:
+                UpdatePopup = CTkMessagebox(
+                    title="Update Available!", 
+                    message=f"New version {latest_version['ForgePanelVersion']} is available.\nYou are running {ProgramSettings['ForgePanelVersion']}",
+                    icon="info",
+                    option_1="Take me there",
+                    option_2="Remind me later",
+                )
+                if UpdatePopup.get() == "Take me there":
+                    OpenURL("https://github.com/ForgePanelProject/ForgePanel/releases")
+        except:
+            print("Failed to check for updates")
+    svmem = psutil.virtual_memory()
+    Page = ""
+    UIconPath = path.join(FPPath, "assets", "SystemUIcon")
+    if not path.exists(path.join(FPPath, "Servers")):
+        os.makedirs(path.join(FPPath, "Servers"))
+    AllServerList = os.listdir(path.join(FPPath, "Servers"))
+    ServerList = [SelectServerEntry]
+    for i in range(len(AllServerList)):
+        try:
+            with open(path.join(FPPath, "Servers", AllServerList[i], "settings.json"), 'r') as file:
+                ServerSettings = json.load(file)
+            if ServerSettings["installed"]:
+                ServerList.append(AllServerList[i])
+            if ServerSettings["ForgePanelVersion"] == "b.1.0":
+                ServerList.append(AllServerList[i])
+                ServerSettings["installed"] = True
+                ServerSettings["ForgePanelVersion"] = ProgramSettings["ForgePanelVersion"]
+
+        except: continue
+    ListLen = len(ServerList)-1
+    if path.exists(path.join(FPPath,"temp")):
+        RemoveFolder(path.join(FPPath,"temp"))
+    ServerProcess = None
+    ServerState = "Offline"
+    ServerSoftware = ""
     ctk.set_appearance_mode("light")
     GUI = ctk.CTk(fg_color="white")
     GUI.title("ForgePanel")
@@ -183,7 +205,17 @@ if LoadVar:
             HomeButtonTxt.grid(row=1, column=1)
 
             Sidebar.rowconfigure(8, weight=1)
+            FeedbackButton.grid_propagate(False)
+            FeedbackButton.configure(width=240, height=35)
+            FeedbackButton.grid(column=1, row=11, columnspan=2, padx=8, pady=(10,0), sticky="s")
+            FeedbackButtonImg.grid(row=1, column=0, padx=2)
+            FeedbackButtonTxt.grid(row=1, column=1)
 
+            SettingsButton.grid_propagate(False)
+            SettingsButton.configure(width=240, height=35)
+            SettingsButton.grid(column=1, row=12, columnspan=2, padx=8, pady=(10,0), sticky="s")
+            SettingsButtonImg.grid(row=1, column=0, padx=2)
+            SettingsButtonTxt.grid(row=1, column=1)
             VersionLabel.grid(column=1, columnspan=2, row=13, pady=(10,20), sticky="s")
             if Server != "":
                 DashboardButton.grid_propagate(False)
@@ -240,17 +272,7 @@ if LoadVar:
                     WhitelistButton.grid(column=1, row=8, columnspan=2, padx=8, pady=(10,0), sticky="n")
                     WhitelistButtonImg.grid(row=1, column=0, padx=2)
                     WhitelistButtonTxt.grid(row=1, column=1)
-                FeedbackButton.grid_propagate(False)
-                FeedbackButton.configure(width=240, height=35)
-                FeedbackButton.grid(column=1, row=11, columnspan=2, padx=8, pady=(10,0), sticky="s")
-                FeedbackButtonImg.grid(row=1, column=0, padx=2)
-                FeedbackButtonTxt.grid(row=1, column=1)
 
-                SettingsButton.grid_propagate(False)
-                SettingsButton.configure(width=240, height=35)
-                SettingsButton.grid(column=1, row=12, columnspan=2, padx=8, pady=(10,0), sticky="s")
-                SettingsButtonImg.grid(row=1, column=0, padx=2)
-                SettingsButtonTxt.grid(row=1, column=1)
     def DeletePageContent(*args):
         try:
             CreateServerEntry.delete(0, ctk.END)
@@ -304,8 +326,7 @@ if LoadVar:
             WhitelistSelect.grid_forget()
             WhitelistSelectTitle.grid_forget()
             '''RAMFrame.grid_forget()
-            CPUFrame.grid_forget()
-            DiskFrame.grid_forget()'''
+            CPUFrame.grid_forget()'''
             HelpHomeButton.grid_forget()
             StatusFrame.grid_forget()
             scrollframe.grid_forget()
@@ -382,7 +403,7 @@ if LoadVar:
         info_frame.grid(row=0, column=0, padx=15, pady=20)
         info_frame.grid_columnconfigure(0, weight=1)
 
-        CTkLabel(info_frame, text=f"{ServerSettings['MinecraftVersion']} {ServerSettings['Software']}", font=("Arial", 30,"bold")).grid(row=0, column=0, pady=5)
+        CTkLabel(info_frame, text=f"{ServerSettings['MinecraftVersion']} {ServerSettings['Software']}", font=("Futura", 30,"bold")).grid(row=0, column=0, pady=5)
         CTkButton(info_frame, text=ResetButtonTxt, width=245, fg_color="red", hover_color="red3", command=lambda: ResetChangeServerPage(False,True)).grid(row=2, column=0, padx=5, pady=5)
         CTkButton(info_frame, text=ChangeButtonTxt, width=245, fg_color="red", command=lambda: ResetChangeServerPage(True,True)).grid(row=1, column=0, padx=5, pady=5)
         CTkButton(info_frame, text=DeleteButtonTxt, width=245, fg_color="red", hover_color="red3", command=lambda: ResetChangeServerPage(False,False)).grid(row=3, column=0, padx=5, pady=5)
@@ -393,14 +414,24 @@ if LoadVar:
         docs_frame.grid(row=0, column=2, padx=15, pady=20)
         docs_frame.grid_columnconfigure(0, weight=1)
 
-        CTkLabel(docs_frame, text=NeedHelpTxt, font=("Futura", 30)).grid(row=0, column=0, pady=20)
-        CTkButton(docs_frame, text=DocumentationTxt, command=lambda: OpenURL("https://fpp.gitbook.io/fp/")).grid(row=1, column=0, pady=5)
+        CTkLabel(docs_frame, text=NeedHelpTxt, font=("Futura", 30, "bold")).grid(row=0, column=0, pady=5)
+        CTkButton(docs_frame, text=DocumentationTxt, command=lambda: OpenURL("https://fpp.gitbook.io/fp/")).grid(row=1, column=0, pady=10)
+
+        DiskFrame = CTkFrame(scrollframe, fg_color="grey95", width=295, height=180)
+        DiskFrame.grid_propagate(False)
+        DiskFrame.columnconfigure(0, weight=1)
+        DiskFrame.columnconfigure(2, weight=1)
 
         '''RAMFrame.grid(column=0, row=0, sticky="nsew")
-        CPUFrame.grid(column=1, row=0, sticky="nsew")
-        DiskFrame.grid(column=2, row=0, sticky="nsew")
+        CPUFrame.grid(column=1, row=0, sticky="nsew")'''
+        DiskFrame.grid(row=0, column=1, padx=15, pady=20)
         disk_usage = get_directory_size(path.join(FPPath, "Servers", Server))
-        DiskLabel.configure(text=f"{disk_usage:.1f} MB")'''
+        DiskTitleLabel = CTkLabel(DiskFrame, text="Storage", font=("Futura", 30, "bold"))
+        DiskTitleLabel.grid(column=1, row=1, pady=5)
+        DiskLabel = CTkLabel(DiskFrame, text="0 MB", font=("Futura", 25), text_color="black")
+        DiskLabel.grid(column=1, row=2, pady=10)
+        DiskLabel.configure(text=f"{disk_usage:.1f} MB")
+
     def ResetChangeServerPage(VersionChange, ShowKeepBoxes):
         global keep_config
         global keep_world
@@ -499,9 +530,23 @@ if LoadVar:
             RemoveFolder(server_path)
             global ListLen
             global ServerList
-            ServerList = os.listdir(path.join(FPPath, "Servers"))
-            ServerList.insert(0, SelectServerEntry)
-            ListLen = len(ServerList)
+            AllServerList = os.listdir(path.join(FPPath, "Servers"))
+            ServerList = [SelectServerEntry]
+            for i in range(len(AllServerList)):
+                try:
+                    with open(path.join(FPPath, "Servers", AllServerList[i], "settings.json"), 'r') as file:
+                        ServerSettings = json.load(file)
+                    if ServerSettings["installed"]:
+                        ServerList.append(AllServerList[i])
+                    if ServerSettings["ForgePanelVersion"] == "b.1.0":
+                        ServerList.append(AllServerList[i])
+                        ServerSettings["installed"] = True
+                        ServerSettings["ForgePanelVersion"] = ProgramSettings["ForgePanelVersion"]
+
+                except: continue
+            ListLen = len(ServerList)-1
+            if path.exists(path.join(FPPath,"temp")):
+                RemoveFolder(path.join(FPPath,"temp"))
             Server = ""
             for widget in widgets:
                 widget.grid_forget()
@@ -786,8 +831,7 @@ if LoadVar:
                 ServerProcess.stdin.write("stop\n")
                 try:
                     ServerProcess.stdin.flush()
-                except:
-                    pass
+                except: pass
                 sleep(3)
                 ServerProcess.kill()
                 ServerProcess = None
@@ -892,6 +936,86 @@ if LoadVar:
         )
         lang_menu.set(ProgramSettings['lang'])
         lang_menu.grid(row=1, column=0, pady=10)
+        
+        #Backups
+        def backup():
+            if platform.system() == "Windows":
+                backup_dir = ctk.filedialog.asksaveasfilename(initialdir=os.path.join(path.expanduser('~'), "Documents"), defaultextension=".fpbackup", filetypes=[("ForgePanel Backup", "*.fpbackup")], title="Select Backup Location", initialfile=f"backup-{str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))}.fpbackup")
+            else:
+                backup_dir = ctk.filedialog.asksaveasfilename(path.expanduser('~'), defaultextension=".fpbackup", filetypes=[("ForgePanel Backup", "*.fpbackup")], title="Select Backup Location", initialfile=f"backup-{str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))}.fpbackup")
+            if backup_dir:
+                if path.exists(path.join(FPPath, "temp", "backup")):
+                    RemoveFolder(path.join(FPPath, "temp", "backup"))
+                os.makedirs(path.join(FPPath, "temp", "backup"))
+                CopyFolder(path.join(FPPath, "Servers"), path.join(FPPath, "temp", "backup", "Servers"))
+                CopyFile(path.join(FPPath, "settings.json"), path.join(FPPath, "temp", "backup", "settings.json"))
+                make_archive(path.join(FPPath, "temp", "backup"), 'zip', path.join(FPPath, "temp", "backup"))
+                os.rename(path.join(FPPath, "temp", "backup.zip"), path.join(FPPath, "temp", path.basename(backup_dir)))
+                MoveFile(path.join(FPPath, "temp", path.basename(backup_dir)), backup_dir)
+                os.startfile(path.dirname(backup_dir))
+                RemoveFolder(path.join(FPPath, "temp", "backup"))
+        def backupRestore():
+            if path.exists(path.join(FPPath, "temp", "backup")):
+                RemoveFolder(path.join(FPPath, "temp", "backup"))
+            os.makedirs(path.join(FPPath, "temp", "backup"))
+            if platform.system() == "Windows":
+                backup_file = ctk.filedialog.askopenfilename(initialdir=os.path.join(path.expanduser('~'), "Documents"), defaultextension=".fpbackup", filetypes=[("ForgePanel Backup", "*.fpbackup")], title="Select Backup File")
+            else:
+                backup_file = ctk.filedialog.askopenfilename(initialdir=os.path.join(path.expanduser('~')), filetypes=[("ForgePanel Backup", "*.fpbackup")], title="Select Backup File")
+            if backup_file:
+                deleteMessage = CTkMessagebox(title=SettingsBackupImportButtonTxt, message=SettingsRestoreWarnTxt, icon="warning", option_1=Cancel, option_2=ContinueAnyway)
+                if deleteMessage.get() == ContinueAnyway:
+                    global Server
+                    global ListLen
+
+                    Server=""
+                    if path.exists(path.join(FPPath, "temp", "backup")):
+                        RemoveFolder(path.join(FPPath, "temp", "backup"))
+                    os.makedirs(path.join(FPPath, "temp", "backup"))
+                    CopyFile(backup_file, path.join(FPPath, "temp", "backup.zip"))
+                    unpack_archive(path.join(FPPath, "temp", "backup.zip"), path.join(FPPath, "temp", "backup"))
+                    os.remove((path.join(FPPath, "temp", "backup.zip")))
+                    with open(path.join(FPPath, "temp", "backup", "settings.json"), 'r') as file:
+                        BackupSettings = json.load(file)
+                    with open(path.join(FPPath, "settings.json"), 'r') as file:
+                        ProgramSettings = json.load(file)
+                    
+                    if float(BackupSettings["ForgePanelVersion"][2:]) <= float(ProgramSettings["ForgePanelVersion"][2:]):
+                        if path.exists(path.join(FPPath, "Servers")):
+                            RemoveFolder(path.join(FPPath, "Servers"))
+                        if path.exists(path.join(FPPath, "settings.json")):
+                            os.remove(path.join(FPPath, "settings.json"))
+                        CopyFolder(path.join(FPPath, "temp", "backup", "Servers"), path.join(FPPath, "Servers"))
+                        CopyFile(path.join(FPPath, "temp", "backup", "settings.json"), path.join(FPPath, "settings.json"))
+                        
+                        AllServerList = os.listdir(path.join(FPPath, "Servers"))
+                        ServerList = [SelectServerEntry]
+                        for i in range(len(AllServerList)):
+                            try:
+                                with open(path.join(FPPath, "Servers", AllServerList[i], "settings.json"), 'r') as file:
+                                    ServerSettings = json.load(file)
+                                if ServerSettings["installed"]:
+                                    ServerList.append(AllServerList[i])
+                                if ServerSettings["ForgePanelVersion"] == "b.1.0":
+                                    ServerList.append(AllServerList[i])
+                                    ServerSettings["installed"] = True
+                                    ServerSettings["ForgePanelVersion"] = ProgramSettings["ForgePanelVersion"]
+
+                            except: continue
+                        ListLen = len(ServerList)
+                        if path.exists(path.join(FPPath,"temp")):
+                            RemoveFolder(path.join(FPPath,"temp"))
+                        ChooseServerMenu.configure(values=ServerList)
+                        HomePageLoad()
+                        if BackupSettings["lang"] != ProgramSettings["lang"]:
+                            CTkMessagebox(title=LangChangeTitle, message=LangChangeInfoTxt, icon="info")
+                    else:
+                        CTkMessagebox(title=SettingsBackupImportButtonTxt, message=SettingsRestoreUncompatibleTxt, icon="cancel")
+                        if path.exists(path.join(FPPath,"temp")):
+                            RemoveFolder(path.join(FPPath,"temp"))
+        CTkLabel(settings_frame, text=SettingsBackupTitle, font=("Futura", 20)).grid(row=2, column=0, pady=10)
+        CTkButton(settings_frame, text=SettingsBackupCreateButtonTxt, command=lambda: backup()).grid(row=3, column=0, pady=10)
+        CTkButton(settings_frame, text=SettingsBackupImportButtonTxt, command=lambda: backupRestore()).grid(row=4, column=0, pady=10)
 
     def FeedbackPageLoad(*args):
         OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSdHLa3h43drvhhbmJ7OSV85xlqR5s1Vr8JI4bHtomUEB9zGEA/viewform")
@@ -1126,7 +1250,8 @@ if LoadVar:
             "MinecraftVersion":f"{MinecraftVersion}",
             "Software":ServerSoftware,
             "SettingsVersion":1,
-            "ForgePanelVersion":"b.1.0"
+            "ForgePanelVersion":ProgramSettings["ForgePanelVersion"],
+            "installed":True
             }
         with open(fr'{FPPath}/Servers/{Server}/settings.json', 'w') as file:
             json.dump(StandardSettings, file)
@@ -1225,24 +1350,23 @@ if LoadVar:
                         ServerState="Online"
                     elif "All dimensions are saved" in line:
                         GUI.after(0, lambda: StatusLabel.configure(text="Offline", text_color="red"))
-                        ServerState="Offline"
-                except:
-                    pass
+                        ServerState="Quitting"
+                        def endServerProcess():
+                            global ServerState
+                            sleep(15)
+                            ServerState="Offline"
+                            ProcessInstance.kill()
+                        Thread(target=endServerProcess).start()
+                except: pass
             stream.close()
         def UpdateStatus(process):
             while True:
                 if process.poll() is not None:
                     try:
                         GUI.after(0, lambda: StatusLabel.configure(text="Offline", text_color="red"))
-                    except:
-                        pass
+                    except: pass
                     break
                 sleep(1)
-        '''def update_disk_usage():
-            while True:
-                disk_usage = get_directory_size(path.join(FPPath, "Servers", Server))
-                DiskLabel.configure(text=f"{disk_usage:.1f} MB")
-                sleep(0.5)'''
         Thread(target=UpdateOutput, args=(ProcessInstance.stdout, "stdout")).start()
         Thread(target=UpdateOutput, args=(ProcessInstance.stderr, "stderr")).start()
         Thread(target=UpdateStatus, args=(ProcessInstance,)).start()
@@ -1313,14 +1437,14 @@ if LoadVar:
             cpu_percent = min(100, max(0, cpu_percent))
             return cpu_percent
         except psutil.NoSuchProcess:
-            return None
+            return None'''
     def get_directory_size(directory):
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(directory):
             for filename in filenames:
                 filepath = path.join(dirpath, filename)
                 total_size += path.getsize(filepath)
-        return total_size / (1024 * 1024)  # Convert to MB'''
+        return total_size / (1024 * 1024)
     Topbar = CTkFrame(GUI, border_color="grey95", fg_color="transparent", border_width=2)
     Topbar.grid_propagate(False)
     Topbar.configure(height=75)
@@ -1333,7 +1457,7 @@ if LoadVar:
     FPImg = CTkLabel(Sidebar, image=Logo, text="")
     Title = CTkLabel(Topbar, text=HomePageTitle, font=("Futura", 30, "bold"))
     ContentFrame = ctk.CTkFrame(GUI, fg_color="white")
-    
+
     ContentFrame.grid_propagate(False)
     ContentFrame.configure(width=1280, height=975)
     #Menu Buttons:
@@ -1476,10 +1600,6 @@ if LoadVar:
     CPUFrame.grid_propagate(False)
     CPUFrame.columnconfigure(0, weight=1)
     CPUFrame.columnconfigure(2, weight=1)
-    DiskFrame = CTkFrame(ContentFrame, fg_color="grey95", width=150, height=125)
-    DiskFrame.grid_propagate(False)
-    DiskFrame.columnconfigure(0, weight=1)
-    DiskFrame.columnconfigure(2, weight=1)
     RAMTitleLabel = CTkLabel(RAMFrame, text="RAM", font=("Futura", 25, "bold"))
     RAMTitleLabel.grid(column=1, row=1, pady=10)
     RAMLabel = CTkLabel(RAMFrame, text="Offline", font=("Futura", 25), text_color="red")
@@ -1488,12 +1608,7 @@ if LoadVar:
     CPUTitleLabel = CTkLabel(CPUFrame, text="CPU", font=("Futura", 25, "bold"))
     CPUTitleLabel.grid(column=1, row=1, pady=10)
     CPULabel = CTkLabel(CPUFrame, text="Offline", font=("Futura", 25), text_color="red")
-    CPULabel.grid(column=1, row=2, pady=10)
-
-    DiskTitleLabel = CTkLabel(DiskFrame, text="Storage", font=("Futura", 25, "bold"))
-    DiskTitleLabel.grid(column=1, row=1, pady=10)
-    DiskLabel = CTkLabel(DiskFrame, text="0 MB", font=("Futura", 25), text_color="black")
-    DiskLabel.grid(column=1, row=2, pady=10)'''
+    CPULabel.grid(column=1, row=2, pady=10)'''
 
     #Misc:
     ErrorTxt = CTkLabel(ContentFrame, text_color="red", text="")
@@ -1535,5 +1650,17 @@ if LoadVar:
 
     if Page == "":
         HomePageLoad()
-    
+
+    GUI.protocol("WM_DELETE_WINDOW", lambda: os._exit(0))
+    GUI.mainloop()
+else:
+    GUI = ctk.CTk()
+    GUI.title("ForgePanel - Fatal Error")
+    GUI.iconbitmap(path.join(f"{path.dirname(path.abspath(__file__))}","assets","ForgePanel","FP.ico"))
+    ErrorLabel = ctk.CTkLabel(GUI, text="Java is required to use ForgePanel.", font=("Futura", 15))
+    ErrorLabel.pack(padx=10, pady=10)
+    button = ctk.CTkButton(GUI, text="Download Temurin (Java)", command=lambda: OpenURL("adoptium.net"))
+    button.pack(padx=10, pady=10)
+    button2 = ctk.CTkButton(GUI, text="Close", command=exit)
+    button2.pack(padx=10, pady=10)
     GUI.mainloop()
