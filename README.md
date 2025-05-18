@@ -8,7 +8,6 @@ ____________________________________________________________________________
 Roadmap:
 
 ✅ - Beta Release b.1.0 (Will only contain Basic functions. Supported on launch are Forge, NeoForge and Vanilla)
-    |-> Bugfix b.1.1.1
 
 Modrinth Update b.2.0 (Adding support for .mrpack files, Modrinth Integration)
 
