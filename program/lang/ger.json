@@ -19,7 +19,7 @@
  "AddWhitelistPlayersButtonTxt": "Spieler hinzuf\u00fcgen",
  "NoOnlineModeProceed": "Ohne Mojang Authentifikation fortfahren",
  "NewServerGreetingTxt": "Willkommen bei deinem neuen Server",
- "HelpButtonTxt": "Hilfe",
+ "HelpButtonTXT": "Hilfe",
  "ConsoleTitle": "Konsole",
  "ServerVanillaDownloadText": "Lehn dich zur\u00fcck w\u00e4hrend wir deinen Vanilla Server installieren...",
  "ServerDownloadErrorText": "Ein Fehler ist aufgetreten\nWir konnten deinen Server nicht installieren",
@@ -54,4 +54,12 @@
  "UnbanTxt": "Entbannen",
  "PlayersTitle": "Spieler",
  "EnterCommandPlaceholder": "Befehl eingeben...",
- "SendCommandTxt": "Befehl senden"}
+ "SendCommandTxt": "Befehl senden",
+ "StartServerButtonTxt": "Starten",
+ "StopServerButtonTxt": "Stoppen",
+ "ForgePanelUpdateNotificationTitle": "ForgePanel Update",
+ "ForgePanelUpdateNotificationTxt1": "Ein neues Update ist verf\u00fcgbar!\nDu hast Version ",
+ "ForgePanelUpdateNotificationTxt2": ".\nFolgendes ist in Version ",
+ "ForgePanelUpdateNotificationTxt3": " neu:\n",
+ "OpenUpdatePage": "Lade Update von GitHub herunter",
+ "LaterButtonTxt": "Sp\u00e4ter erinnern"}

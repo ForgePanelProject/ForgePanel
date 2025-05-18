@@ -8,10 +8,11 @@ ____________________________________________________________________________
 Roadmap:
 
 ✅ - Beta Release b.1.0 (Will only contain Basic functions. Supported on launch are Forge, NeoForge and Vanilla)
+    |-> Bugfix b.1.1.1
 
-Tunnel Update b.2.0 (Will add zrok and maybe ngrok support inside of the program)
+Modrinth Update b.2.0 (Adding support for .mrpack files, Modrinth Integration)
 
-Modrinth Update b.3.0 (Adding support for .mrpack files, Modrinth Integration)
+Tunnel Update b.3.0 (Will add zrok and maybe ngrok support inside of the program)
 
 Modloader update(s) (Adding Fabric and Paper support. Maybe even more.)
 

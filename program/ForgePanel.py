@@ -16,12 +16,12 @@ if java_path:
     from CTkMessagebox import CTkMessagebox
     from scripts.createForgeServer import download as downloadForge
     from scripts.createForgeServer import checkInstall as checkForgeInstall
-    from scripts.createNeoForgeServer import Download as downloadNeoForge
-    from scripts.createNeoForgeServer import CheckInstall as checkNeoForgeInstall
-    from scripts.createVanillaServer import Download as downloadVanilla
+    from scripts.createNeoForgeServer import download as downloadNeoForge
+    from scripts.createNeoForgeServer import checkInstall as checkNeoForgeInstall
+    from scripts.createVanillaServer import download as downloadVanilla
     from scripts.SettingsPropertiesConverter import convertSettingsProperties
     from scripts.getPlayerData import getPlayerData
-    from re import search as StringSearch
+    from re import search as stringSearch
     import platform
     import requests
     import json
@@ -33,6 +33,7 @@ if java_path:
     from shutil import unpack_archive
     from shutil import move as MoveFile
     from io import BytesIO
+    from types import SimpleNamespace
     import datetime
     
     if platform.system()=="Windows":
@@ -45,81 +46,7 @@ if java_path:
         ProgramSettings = json.load(fpsettings)
     with open(path.join(FPPath,"lang",f"{ProgramSettings['lang']}.json"), "r") as langjson:
         lang = json.load(langjson)
-    #languageLoading:
-        #Menubars and essential page components:
-            #Titles:
-    HomePageTitle = lang["HomePageTitle"]
-    ServerCreateTitle = lang["ServerCreateTitle"]
-    ConfigTitle = lang["ConfigTitle"]
-    FolderTitle = lang["FolderTitle"]
-    SettingsTitle = lang["SettingsTitle"]
-            #Pages
-                #ServerDownload
-    ServerForgeDownloadText = lang["ServerForgeDownloadText"]
-    ServerNeoForgeDownloadText = lang["ServerNeoForgeDownloadText"]
-    ServerVanillaDownloadText = lang["ServerVanillaDownloadText"]
-    ServerDownloadErrorText = lang["ServerDownloadErrorText"]
-                #HomePage:
-    Greeting = lang["Greeting"]
-    CreateServerTXT = lang["CreateServerTXT"]
-    ChooseServerTXT = lang["ChooseServerTXT"]
-    SelectServerEntry = lang["SelectServerEntry"]
-    NameEntryTxt = lang["NameEntryTxt"]
-    ErrorServerNameDuplicate = lang["ErrorServerNameDuplicate"]
-    ErrorServerNameForbiddenCharacters = lang["ErrorServerNameForbiddenCharacters"]
-    ErrorServerNameEmpty = lang["ErrorServerNameEmpty"]
-                #ServerSetupPage:
-                    #Intro:
-    NewServerGreetingTxt = lang["NewServerGreetingTxt"]
-    SetupIntroTitle = lang["SetupIntroTitle"]
-                    #Quick Setup:
-    QuickSetupTxt = lang["QuickSetupTxt"]
-                    #Advanced Setup:
-    AdvancedSetupTxt = lang["AdvancedSetupTxt"]
-                    #Warning:
-    OnlineModeWarnTxt= lang["OnlineModeWarnTxt"]
-    WhitelistInfoPageTxt= lang["WhitelistInfoPageTxt"]
-    DeactivateWhitelistButtonTxt = lang["DeactivateWhitelistButtonTxt"]
-    NoOnlineModeProceed = lang["NoOnlineModeProceed"]
-    WarningServerDelete = lang["WarningServerDelete"]
-                #DashboardPage:
-    DashboardPageTitle = lang["DashboardPageTitle"]
-    ChangeButtonTxt = lang["ChangeButtonTxt"]
-    ResetButtonTxt = lang["ResetButtonTxt"]
-    DeleteButtonTxt = lang["DeleteButtonTxt"]
-                #ConsolePage:
-    ConsoleTitle = lang["ConsoleTitle"]
-    EnterCommandPlaceholder = lang["EnterCommandPlaceholder"]
-    SendCommandTxt = lang["SendCommandTxt"]
-                #SettingsPage:
-    SettingsLangChangeTitle = lang["SettingsLangChangeTitle"]
-    SettingsBackupTitle = lang["SettingsBackupTitle"]
-    SettingsBackupCreateButtonTxt = lang["SettingsBackupCreateButtonTxt"]
-    SettingsBackupImportButtonTxt = lang["SettingsBackupImportButtonTxt"]
-    SettingsRestoreWarnTxt = lang["SettingsRestoreWarnTxt"]
-    SettingsRestoreUncompatibleTxt = lang["SettingsRestoreUncompatibleTxt"]
-                #WhiteListPage:
-    WhitelistTitle = lang["WhitelistTitle"]
-    WhitelistAddPlayerTxt = lang["WhitelistAddPlayerTxt"]
-    WhitelistAddPlayerNameTxt = lang["WhitelistAddPlayerNameTxt"]
-    WhitelistRemovePlayerTxt = lang["WhitelistRemovePlayerTxt"]
-                #PlayersPage:
-    PlayersTitle = lang["PlayersTitle"]
-    BanTxt = lang["BanTxt"]
-    UnbanTxt = lang["UnbanTxt"]
-                #misc:
-    HelpButtonTXT = lang["HelpButtonTxt"]
-    NextButtonTXT = lang["NextButtonTXT"]
-    FeedbackButtonText = lang["FeedbackButtonText"]
-    LangChangeTitle = lang["LangChangeTitle"]
-    LangChangeInfoTxt = lang["LangChangeInfoTxt"]
-    Cancel = lang["Cancel"]
-    ContinueAnyway = lang["ContinueAnyway"]
-    NeedHelpTxt = lang["NeedHelpTxt"]
-    DocumentationTxt = lang["DocumentationTxt"]
-    KeepModsTxt = lang["KeepModsTxt"]
-    KeepWorldTxt = lang["KeepWorldTxt"]
-    KeepConfigsTxt =  lang["KeepConfigsTxt"]
+    translation = SimpleNamespace(**lang)
     try:
         VERSION_DATA = requests.get("https://raw.githubusercontent.com/ForgePanelProject/ForgePanel/refs/heads/main/webdata/VersionList.json").json()    
         VERSION_DATA = dict(reversed(VERSION_DATA.items()))
@@ -147,15 +74,15 @@ if java_path:
     def UpdateCheck(*args):
         try:
             latest_version = requests.get("https://raw.githubusercontent.com/ForgePanelProject/ForgePanel/refs/heads/main/program/settings.json").json()
-            if latest_version['ForgePanelVersion'] != ProgramSettings['ForgePanelVersion']:
+            if latest_version['SecretVersion'] > ProgramSettings['SecretVersion']:
                 UpdatePopup = CTkMessagebox(
-                    title="Update Available!", 
-                    message=f"New version {latest_version['ForgePanelVersion']} is available.\nYou are running {ProgramSettings['ForgePanelVersion']}",
+                    title=translation.ForgePanelUpdateNotificationTitle, 
+                    message=translation.ForgePanelUpdateNotificationTxt1+ProgramSettings['ForgePanelVersion']+translation.ForgePanelUpdateNotificationTxt2+latest_version['ForgePanelVersion']+translation.ForgePanelUpdateNotificationTxt3+latest_version['Changelog'],
                     icon="info",
-                    option_1="Take me there",
-                    option_2="Remind me later",
+                    option_1=translation.OpenUpdatePage,
+                    option_2=translation.LaterButtonTxt,
                 )
-                if UpdatePopup.get() == "Take me there":
+                if UpdatePopup.get() == translation.OpenUpdatePage:
                     OpenURL("https://github.com/ForgePanelProject/ForgePanel/releases")
         except:
             print("Failed to check for updates")
@@ -165,7 +92,7 @@ if java_path:
     if not path.exists(path.join(FPPath, "Servers")):
         os.makedirs(path.join(FPPath, "Servers"))
     AllServerList = os.listdir(path.join(FPPath, "Servers"))
-    ServerList = [SelectServerEntry]
+    ServerList = [translation.SelectServerEntry]
     for i in range(len(AllServerList)):
         try:
             with open(path.join(FPPath, "Servers", AllServerList[i], "settings.json"), 'r') as file:
@@ -194,6 +121,11 @@ if java_path:
     UpdateCheck()
 
     def ShowSidebarButtons(*args):
+        Logo = ctk.CTkImage(Image.open(f'{FPPath}/assets/ForgePanel/FPlogo_512.png'), size=(50, 50))
+        FPTxt = CTkLabel(Sidebar, text="ForgePanel", font=("Futura", 30, "bold"), text_color="black")
+        FPImg = CTkLabel(Sidebar, image=Logo, text="")
+        FPTxt.grid(column=2, row=0, padx=(10,15), pady=(15,0))
+        FPImg.grid(column=1, row=0, padx=(15,0), pady=(15,0))
         if Page != "Setup":
             HomeButton.grid_propagate(False)
             HomeButton.configure(width=240, height=45)
@@ -274,91 +206,23 @@ if java_path:
                     WhitelistButtonTxt.grid(row=1, column=1)
 
     def DeletePageContent(*args):
+        for widget in ContentFrame.winfo_children():
+            widget.grid_forget()
+        for widget in Sidebar.winfo_children():
+            widget.grid_forget()
         try:
-            CreateServerEntry.delete(0, ctk.END)
-            ChooseServerButton.grid_forget()
-            ChooseServerMenu.grid_forget()
-            ChooseServerTxt.grid_forget()
-            CommandEntry.grid_forget()
-            ConsoleOutput.grid_forget()
-            ConsoleButton.grid_forget()
-            ContentFrame.columnconfigure(0, weight=0)
-            ContentFrame.columnconfigure(1, weight=0)
-            ContentFrame.columnconfigure(2, weight=0)
-            ContentFrame.columnconfigure(3, weight=0)
-            ContentFrame.columnconfigure(4, weight=0)
-            ContentFrame.columnconfigure(5, weight=0)
-            ContentFrame.columnconfigure(6, weight=0)
-            ContentFrame.rowconfigure(0, weight=0)
-            ContentFrame.rowconfigure(1, weight=0)
-            ContentFrame.rowconfigure(2, weight=0)
-            CreateServerButton.grid_forget()
-            CreateServerEntry.grid_forget()
-            CreateServerTxt.grid_forget()
-            DashboardButton.grid_forget()
-            DifficultyInput.grid_forget()
-            DifficultyInputTitle.grid_forget()
-            EasyPlayerLimit.grid_forget()
-            EasyPlayerLimitTitle.grid_forget()
-            EasyRAMLimit.grid_forget()
-            EasyRAMLimitTitle.grid_forget()
-            ErrorTxt.grid_forget()
-            GamemodeInput.grid_forget()
-            GamemodeIntuptTitle.grid_forget()
-            HelpSetUpButton.grid_forget()
-            HomeButton.grid_forget()
-            NextButton.grid_forget()
-            OnlineModeChangeButton.grid_forget()
-            OnlineModeChangeButton.grid_forget()
-            OnlineModeChangeTitle.grid_forget()
-            OnlineModeProceedButton.grid_forget()
-            OnlineModeSelect.grid_forget()
-            OnlineModeSelectTitle.grid_forget()
-            SendButton.grid_forget()
-            SetupIntroButton1.grid_forget()
-            SetupIntroButton2.grid_forget()
-            SetupIntroTxt.grid_forget()
             VersionBar.grid_forget()
-            WelcomeTxt.grid_forget()
-            WhitelistAddButton.grid_forget()
-            WhitelistChangeButton.grid_forget()
-            WhitelistChangeTitle.grid_forget()
-            WhitelistSelect.grid_forget()
-            WhitelistSelectTitle.grid_forget()
-            '''RAMFrame.grid_forget()
-            CPUFrame.grid_forget()'''
-            HelpHomeButton.grid_forget()
-            StatusFrame.grid_forget()
-            scrollframe.grid_forget()
-            keep_config.grid_forget()
-            keep_mods.grid_forget()
-            keep_world.grid_forget()
-            cancel_button.grid_forget()
-            continue_button.grid_forget()
-            warning_label.grid_forget()
-        except:
-            print("error clearing page content")
-        try:
-            ServerDirButton.grid_forget()
-            ConfigButton.grid_forget()
-            FeedbackButton.grid_forget()
-            SettingsButton.grid_forget()
-            WhitelistButton.grid_forget()
-        except:
-            print("error clearing sidebar")
-        try:
-            settings_frame.grid_forget()
-        except:
-            print("error clearing settings")
-        try:
-            PlayerPageFrame.grid_forget()
-        except:
-            print("error clearing player page")
-        try:
-            AddPlayerFrame.grid_forget()
-            WhiteListFrame.grid_forget()
-        except:
-            print("error clearing player page")
+        except: pass
+        ContentFrame.columnconfigure(0, weight=0)
+        ContentFrame.columnconfigure(1, weight=0)
+        ContentFrame.columnconfigure(2, weight=0)
+        ContentFrame.columnconfigure(3, weight=0)
+        ContentFrame.columnconfigure(4, weight=0)
+        ContentFrame.columnconfigure(5, weight=0)
+        ContentFrame.columnconfigure(6, weight=0)
+        ContentFrame.rowconfigure(0, weight=0)
+        ContentFrame.rowconfigure(1, weight=0)
+        ContentFrame.rowconfigure(2, weight=0)
         ShowSidebarButtons()
 
     def HomePageLoad(*args):
@@ -367,7 +231,7 @@ if java_path:
         DeletePageContent()
         ContentFrame.grid_columnconfigure(1, weight=1)
         ContentFrame.grid_columnconfigure(4, weight=1)
-        Title.configure(text=HomePageTitle)
+        Title.configure(text=translation.HomePageTitle)
         WelcomeTxt.grid(column=2, row=0, padx=10, pady=(75,25), columnspan=2)
         if ListLen >= 1:
             ChooseServerTxt.grid(column=2, row=1, padx=10)
@@ -389,7 +253,7 @@ if java_path:
         with open(path.join(FPPath, "Servers", Server, "settings.json"), 'r') as file:
             ServerSettings = json.load(file)
         DeletePageContent()
-        Title.configure(text=Server+" - "+DashboardPageTitle)
+        Title.configure(text=Server+" - "+translation.DashboardPageTitle)
         ContentFrame.columnconfigure(0, weight=1)
         ContentFrame.rowconfigure(0, weight=1)
 
@@ -404,9 +268,9 @@ if java_path:
         info_frame.grid_columnconfigure(0, weight=1)
 
         CTkLabel(info_frame, text=f"{ServerSettings['MinecraftVersion']} {ServerSettings['Software']}", font=("Futura", 30,"bold")).grid(row=0, column=0, pady=5)
-        CTkButton(info_frame, text=ResetButtonTxt, width=245, fg_color="red", hover_color="red3", command=lambda: ResetChangeServerPage(False,True)).grid(row=2, column=0, padx=5, pady=5)
-        CTkButton(info_frame, text=ChangeButtonTxt, width=245, fg_color="red", command=lambda: ResetChangeServerPage(True,True)).grid(row=1, column=0, padx=5, pady=5)
-        CTkButton(info_frame, text=DeleteButtonTxt, width=245, fg_color="red", hover_color="red3", command=lambda: ResetChangeServerPage(False,False)).grid(row=3, column=0, padx=5, pady=5)
+        CTkButton(info_frame, text=translation.ResetButtonTxt, width=245, fg_color="red", hover_color="red3", command=lambda: ResetChangeServerPage(False,True)).grid(row=2, column=0, padx=5, pady=5)
+        CTkButton(info_frame, text=translation.ChangeButtonTxt, width=245, fg_color="red", command=lambda: ResetChangeServerPage(True,True)).grid(row=1, column=0, padx=5, pady=5)
+        CTkButton(info_frame, text=translation.DeleteButtonTxt, width=245, fg_color="red", hover_color="red3", command=lambda: ResetChangeServerPage(False,False)).grid(row=3, column=0, padx=5, pady=5)
 
         # Documentation Widget
         docs_frame = CTkFrame(scrollframe, fg_color="grey95", width=295, height=180)
@@ -414,8 +278,8 @@ if java_path:
         docs_frame.grid(row=0, column=2, padx=15, pady=20)
         docs_frame.grid_columnconfigure(0, weight=1)
 
-        CTkLabel(docs_frame, text=NeedHelpTxt, font=("Futura", 30, "bold")).grid(row=0, column=0, pady=5)
-        CTkButton(docs_frame, text=DocumentationTxt, command=lambda: OpenURL("https://fpp.gitbook.io/fp/")).grid(row=1, column=0, pady=10)
+        CTkLabel(docs_frame, text=translation.NeedHelpTxt, font=("Futura", 30, "bold")).grid(row=0, column=0, pady=5)
+        CTkButton(docs_frame, text=translation.DocumentationTxt, command=lambda: OpenURL("https://fpp.gitbook.io/fp/")).grid(row=1, column=0, pady=10)
 
         DiskFrame = CTkFrame(scrollframe, fg_color="grey95", width=295, height=180)
         DiskFrame.grid_propagate(False)
@@ -443,29 +307,29 @@ if java_path:
         ContentFrame.grid_columnconfigure(1, weight=1)
         ContentFrame.grid_columnconfigure(4, weight=1)
         
-        warning_label = CTkLabel(ContentFrame, text=WarningServerDelete, 
+        warning_label = CTkLabel(ContentFrame, text=translation.WarningServerDelete, 
                             text_color="red", font=("Futura", 25, "bold"))
         warning_label.grid(row=0, column=2, columnspan=2, pady=(75,15))
         
         # Checkboxes for keeping components
         if ShowKeepBoxes:
             keep_world_var = ctk.BooleanVar()
-            keep_world = ctk.CTkCheckBox(ContentFrame, text=KeepWorldTxt, variable=keep_world_var)
+            keep_world = ctk.CTkCheckBox(ContentFrame, text=translation.KeepWorldTxt, variable=keep_world_var)
             keep_world.grid(row=1, column=2, columnspan=2, pady=5)
             
             keep_config_var = ctk.BooleanVar()
-            keep_config = ctk.CTkCheckBox(ContentFrame, text=KeepConfigsTxt, variable=keep_config_var)
+            keep_config = ctk.CTkCheckBox(ContentFrame, text=translation.KeepConfigsTxt, variable=keep_config_var)
             keep_config.grid(row=2, column=2, columnspan=2, pady=5)
             
             keep_mods_var = ctk.BooleanVar()
-            keep_mods = ctk.CTkCheckBox(ContentFrame, text=KeepModsTxt, variable=keep_mods_var)
+            keep_mods = ctk.CTkCheckBox(ContentFrame, text=translation.KeepModsTxt, variable=keep_mods_var)
             keep_mods.grid(row=3, column=2, columnspan=2, pady=5)
         
         # Action buttons
-        continue_button = CTkButton(ContentFrame, text=ContinueAnyway, command=lambda: ExecuteReset(keep_world_var.get(), keep_config_var.get(), keep_mods_var.get(), VersionChange, False, [warning_label, keep_world, keep_config, keep_mods, continue_button, cancel_button]) if ShowKeepBoxes else ExecuteReset(False, False, False, False, True, [warning_label, continue_button, cancel_button]), fg_color="red", hover_color="red3")
+        continue_button = CTkButton(ContentFrame, text=translation.ContinueAnyway, command=lambda: ExecuteReset(keep_world_var.get(), keep_config_var.get(), keep_mods_var.get(), VersionChange, False, [warning_label, keep_world, keep_config, keep_mods, continue_button, cancel_button]) if ShowKeepBoxes else ExecuteReset(False, False, False, False, True, [warning_label, continue_button, cancel_button]), fg_color="red", hover_color="red3")
         continue_button.grid(row=4, column=2, pady=30, padx=7)
         
-        cancel_button = CTkButton(ContentFrame, text=Cancel, command=DashboardPageLoad)
+        cancel_button = CTkButton(ContentFrame, text=translation.Cancel, command=DashboardPageLoad)
         cancel_button.grid(row=4, column=3, pady=30, padx=7)
         
 
@@ -531,7 +395,7 @@ if java_path:
             global ListLen
             global ServerList
             AllServerList = os.listdir(path.join(FPPath, "Servers"))
-            ServerList = [SelectServerEntry]
+            ServerList = [translation.SelectServerEntry]
             for i in range(len(AllServerList)):
                 try:
                     with open(path.join(FPPath, "Servers", AllServerList[i], "settings.json"), 'r') as file:
@@ -551,7 +415,7 @@ if java_path:
             for widget in widgets:
                 widget.grid_forget()
             ChooseServerMenu.configure(values=ServerList)
-            ChooseServerMenu.set(SelectServerEntry)
+            ChooseServerMenu.set(translation.SelectServerEntry)
             DeletePageContent()
             HomePageLoad()
 
@@ -559,7 +423,7 @@ if java_path:
         global Page
         Page = "Console"
         DeletePageContent()
-        Title.configure(text=Server+" - "+ConsoleTitle)
+        Title.configure(text=Server+" - "+translation.ConsoleTitle)
         ContentFrame.columnconfigure(0, weight=1)
         ContentFrame.columnconfigure(1, weight=1)
         ContentFrame.columnconfigure(2, weight=1)
@@ -574,7 +438,7 @@ if java_path:
         global Page
         Page = "Config"
         DeletePageContent()
-        Title.configure(text=Server+" - "+ConfigTitle)
+        Title.configure(text=Server+" - "+translation.ConfigTitle)
 
         # Load current settings
         with open(path.join(FPPath, "Servers", Server, "settings.json"), 'r') as file:
@@ -689,7 +553,7 @@ if java_path:
         if type == "quick":
             ContentFrame.grid_columnconfigure(1, weight=1)
             ContentFrame.grid_columnconfigure(4, weight=1)
-            Title.configure(text=Server+" - "+QuickSetupTxt)
+            Title.configure(text=Server+" - "+translation.QuickSetupTxt)
             EasyPlayerLimitTitle.grid(row=0, column=2, columnspan=2, pady=20)
             EasyPlayerLimit.set(5)
             EasyPlayerLimit.grid(row=1, column=2, columnspan=2, padx=5)
@@ -709,7 +573,7 @@ if java_path:
             NextButton.grid(row=12, column=2, pady=30, padx=7)
             HelpSetUpButton.grid(row=12, column=3, pady=30, padx=7)
         if type == "advanced":
-            ChooseServerTxt.configure(text=Server+" - "+AdvancedSetupTxt)
+            ChooseServerTxt.configure(text=Server+" - "+translation.AdvancedSetupTxt)
 
     def OnlineModeWarnPage(*args):
         DeletePageContent()
@@ -730,7 +594,7 @@ if java_path:
     def check(mode, str):
         if mode == "ServerName":
             pattern = r'[^\.a-zA-Z0-9äÄöÖüÜß#\- ]'
-        if StringSearch(pattern, str):
+        if stringSearch(pattern, str):
             return False
         else:
             return True
@@ -816,7 +680,7 @@ if java_path:
 
     #Server Page Action
     def ChooseServerButtonAction(*args):
-        if ChooseServerMenu.get() != SelectServerEntry:
+        if ChooseServerMenu.get() != translation.SelectServerEntry:
             global Server
             global ServerSoftware
             global ServerRam
@@ -827,14 +691,16 @@ if java_path:
             HomePageLoad()
             ChooseServerButton.configure(state="disabled")
             CreateServerButton.configure(state="disabled")
-            if ServerProcess is not None:
+            if ServerProcess != None:
                 ServerProcess.stdin.write("stop\n")
                 try:
                     ServerProcess.stdin.flush()
                 except: pass
-                sleep(3)
-                ServerProcess.kill()
+                while ServerProcess.poll() != None:
+                    sleep(0.1)
+                    continue
                 ServerProcess = None
+                ServerState = "Offline"
 
             ConsoleOutput.configure(state="normal")
             ConsoleOutput.delete("1.0", "end")
@@ -889,17 +755,17 @@ if java_path:
                     with open(fr'{FPPath}/Servers/{Server}/Server/eula.txt', 'w') as file:
                         file.write("eula = true")
                     VersionBar.grid(column=1,row=1,sticky="nesw")
-                    Title.configure(text=Server+ServerCreateTitle)
+                    Title.configure(text=Server+translation.ServerCreateTitle)
                     ListLen+=1
             else:
-                ErrorTxt.configure(text=ErrorServerNameDuplicate)
+                ErrorTxt.configure(text=translation.ErrorServerNameDuplicate)
                 if ListLen < 1:
                     ErrorTxt.grid(row=4, column=2, columnspan=2)
                 else:
                     ErrorTxt.grid(row=4, column=3)
 
         else:
-            ErrorTxt.configure(text=ErrorServerNameForbiddenCharacters)
+            ErrorTxt.configure(text=translation.ErrorServerNameForbiddenCharacters)
             if ListLen < 1:
                 ErrorTxt.grid(row=4, column=2, columnspan=2)
             else:
@@ -907,7 +773,7 @@ if java_path:
     def OpenServerDir(*args):
         subprocess.Popen(fr'explorer.exe "{FPPath}\Servers\{Server}\Server"') #Windows exclusive
     def SettingsPageLoad(*args):
-        Title.configure(text=SettingsTitle)
+        Title.configure(text=translation.SettingsTitle)
         global settings_frame
         DeletePageContent()
         ContentFrame.grid_columnconfigure(0, weight=1)
@@ -918,7 +784,7 @@ if java_path:
         settings_frame.grid(column=0, row=0, sticky="nesw")
         settings_frame.grid_columnconfigure(0, weight=1)
 
-        CTkLabel(settings_frame, text=SettingsLangChangeTitle, font=("Futura", 20)).grid(row=0, column=0, pady=10)
+        CTkLabel(settings_frame, text=translation.SettingsLangChangeTitle, font=("Futura", 20)).grid(row=0, column=0, pady=10)
         
         # Get available languages from lang folder
         lang_files = [f.split('.')[0] for f in os.listdir(path.join(FPPath, "lang")) if f.endswith('.json')]
@@ -927,7 +793,7 @@ if java_path:
             ProgramSettings['lang'] = new_lang
             with open(path.join(FPPath, "settings.json"), "w") as settings_file:
                 json.dump(ProgramSettings, settings_file)
-            CTkMessagebox(title=LangChangeTitle, message=LangChangeInfoTxt)
+            CTkMessagebox(title=translation.LangChangeTitle, message=translation.LangChangeInfoTxt)
         
         lang_menu = CTkOptionMenu(
             settings_frame, 
@@ -963,8 +829,8 @@ if java_path:
             else:
                 backup_file = ctk.filedialog.askopenfilename(initialdir=os.path.join(path.expanduser('~')), filetypes=[("ForgePanel Backup", "*.fpbackup")], title="Select Backup File")
             if backup_file:
-                deleteMessage = CTkMessagebox(title=SettingsBackupImportButtonTxt, message=SettingsRestoreWarnTxt, icon="warning", option_1=Cancel, option_2=ContinueAnyway)
-                if deleteMessage.get() == ContinueAnyway:
+                deleteMessage = CTkMessagebox(title=translation.SettingsBackupImportButtonTxt, message=translation.SettingsRestoreWarnTxt, icon="warning", option_1=translation.Cancel, option_2=translation.ContinueAnyway)
+                if deleteMessage.get() == translation.ContinueAnyway:
                     global Server
                     global ListLen
 
@@ -989,7 +855,7 @@ if java_path:
                         CopyFile(path.join(FPPath, "temp", "backup", "settings.json"), path.join(FPPath, "settings.json"))
                         
                         AllServerList = os.listdir(path.join(FPPath, "Servers"))
-                        ServerList = [SelectServerEntry]
+                        ServerList = [translation.SelectServerEntry]
                         for i in range(len(AllServerList)):
                             try:
                                 with open(path.join(FPPath, "Servers", AllServerList[i], "settings.json"), 'r') as file:
@@ -1008,14 +874,14 @@ if java_path:
                         ChooseServerMenu.configure(values=ServerList)
                         HomePageLoad()
                         if BackupSettings["lang"] != ProgramSettings["lang"]:
-                            CTkMessagebox(title=LangChangeTitle, message=LangChangeInfoTxt, icon="info")
+                            CTkMessagebox(title=translation.LangChangeTitle, message=translation.LangChangeInfoTxt, icon="info")
                     else:
-                        CTkMessagebox(title=SettingsBackupImportButtonTxt, message=SettingsRestoreUncompatibleTxt, icon="cancel")
+                        CTkMessagebox(title=translation.SettingsBackupImportButtonTxt, message=translation.SettingsRestoreUncompatibleTxt, icon="cancel")
                         if path.exists(path.join(FPPath,"temp")):
                             RemoveFolder(path.join(FPPath,"temp"))
-        CTkLabel(settings_frame, text=SettingsBackupTitle, font=("Futura", 20)).grid(row=2, column=0, pady=10)
-        CTkButton(settings_frame, text=SettingsBackupCreateButtonTxt, command=lambda: backup()).grid(row=3, column=0, pady=10)
-        CTkButton(settings_frame, text=SettingsBackupImportButtonTxt, command=lambda: backupRestore()).grid(row=4, column=0, pady=10)
+        CTkLabel(settings_frame, text=translation.SettingsBackupTitle, font=("Futura", 20)).grid(row=2, column=0, pady=10)
+        CTkButton(settings_frame, text=translation.SettingsBackupCreateButtonTxt, command=lambda: backup()).grid(row=3, column=0, pady=10)
+        CTkButton(settings_frame, text=translation.SettingsBackupImportButtonTxt, command=lambda: backupRestore()).grid(row=4, column=0, pady=10)
 
     def FeedbackPageLoad(*args):
         OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSdHLa3h43drvhhbmJ7OSV85xlqR5s1Vr8JI4bHtomUEB9zGEA/viewform")
@@ -1024,7 +890,7 @@ if java_path:
         global PlayerPageFrame
         Page = "Players"
         DeletePageContent()
-        Title.configure(text=Server+" - "+PlayersTitle)
+        Title.configure(text=Server+" - "+translation.PlayersTitle)
         ContentFrame.grid_columnconfigure(0, weight=1)
         ContentFrame.rowconfigure(0, weight=1)
 
@@ -1086,7 +952,7 @@ if java_path:
             is_banned = Player[0] in banned_players
             ban_button = CTkButton(
                 button_frame,
-                text=UnbanTxt if is_banned else BanTxt,
+                text=translation.UnbanTxt if is_banned else translation.BanTxt,
                 width=75,
                 fg_color="green4" if is_banned else "red",
                 hover_color="green" if is_banned else "red3",
@@ -1152,7 +1018,7 @@ if java_path:
         global AddPlayerFrame
         Page = "Whitelist"
         DeletePageContent()
-        Title.configure(text=Server+" - "+WhitelistTitle)
+        Title.configure(text=Server+" - "+translation.WhitelistTitle)
         ContentFrame.grid_columnconfigure(0, weight=1)
         ContentFrame.rowconfigure(0, weight=1)
 
@@ -1183,7 +1049,7 @@ if java_path:
 
                         CTkLabel(header_frame, text=player["name"], font=("Futura", 25, "bold")).grid(row=0, column=1, padx=5)
 
-                        RemoveButton = CTkButton(player_frame, fg_color="red", hover_color="red3", text=WhitelistRemovePlayerTxt, command=lambda p=player["name"]: RemovePlayer(p))
+                        RemoveButton = CTkButton(player_frame, fg_color="red", hover_color="red3", text=translation.WhitelistRemovePlayerTxt, command=lambda p=player["name"]: RemovePlayer(p))
                         RemoveButton.grid(row=1, column=0, pady=10, padx=5, sticky="s")
 
         AddPlayerFrame = CTkFrame(Topbar, fg_color="grey95")
@@ -1191,7 +1057,7 @@ if java_path:
 
         AddPlayerEntry = CTkEntry(AddPlayerFrame)
         AddPlayerEntry.grid(row=0, column=0, pady=10)
-        AddPlayerButton = CTkButton(AddPlayerFrame, fg_color="green4", hover_color="green", text=WhitelistAddPlayerTxt, command=lambda: AddPlayer(AddPlayerEntry.get()))
+        AddPlayerButton = CTkButton(AddPlayerFrame, fg_color="green4", hover_color="green", text=translation.WhitelistAddPlayerTxt, command=lambda: AddPlayer(AddPlayerEntry.get()))
         AddPlayerButton.grid(row=0, column=1, pady=10)
 
 
@@ -1268,8 +1134,9 @@ if java_path:
         ContentFrame.rowconfigure(2, weight=1)
         if versiontype == "Vanilla":
             ServerSoftware = "Vanilla"
-            LoadingTxt = CTkLabel(ContentFrame, text=ServerVanillaDownloadText, text_color="black", font=("Futura", 20))
+            LoadingTxt = CTkLabel(ContentFrame, text=translation.ServerVanillaDownloadText, text_color="black", font=("Futura", 20))
             LoadingTxt.grid(column=1, row=1)
+            print(1)
             sleep(0.1)
             downloadVanilla(version, f"{path.join(FPPath, 'Servers', Server, 'Server')}", False)
             while True:
@@ -1283,11 +1150,11 @@ if java_path:
                             PastInstall()
                             break
                         elif filedata[0] == "0":
-                                LoadingTxt.configure(text=ServerDownloadErrorText)
+                                LoadingTxt.configure(text=translation.ServerDownloadErrorText)
 
         elif versiontype == "Forge":
             ServerSoftware = "Forge"
-            LoadingTxt = CTkLabel(ContentFrame, text=ServerForgeDownloadText, text_color="black", font=("Futura", 20))
+            LoadingTxt = CTkLabel(ContentFrame, text=translation.ServerForgeDownloadText, text_color="black", font=("Futura", 20))
             LoadingTxt.grid(column=1, row=1)
             sleep(0.1)
             downloadForge(version, f"{path.join(FPPath,'Servers', Server, 'Server')}")
@@ -1300,7 +1167,7 @@ if java_path:
 
         elif versiontype == "NeoForge":
             ServerSoftware = "NeoForge"
-            LoadingTxt = CTkLabel(ContentFrame, text=ServerNeoForgeDownloadText, text_color="black", font=("Futura", 20))
+            LoadingTxt = CTkLabel(ContentFrame, text=translation.ServerNeoForgeDownloadText, text_color="black", font=("Futura", 20))
             LoadingTxt.grid(column=1, row=1)
             sleep(0.1)
             downloadNeoForge(version, f"{path.join(FPPath, 'Servers', Server, 'Server')}")
@@ -1318,8 +1185,10 @@ if java_path:
         with open(path.join(FPPath, 'Servers', Server, 'settings.json'), 'r') as file:
             settings = json.load(file)
             ServerRam = settings["MaxRAM"]
-        with open(path.join(FPPath, "Servers", Server, "Server", "user_jvm_args.txt"), "w") as f:
-            f.write(f"-Xmx{int(ServerRam)}G -Xms{int(ServerRam)}G")
+        try:
+            with open(path.join(FPPath, "Servers", Server, "Server", "user_jvm_args.txt"), "w") as f:
+                f.write(f"-Xmx{int(ServerRam)}G -Xms{int(ServerRam)}G")
+        except: pass
         if software == "Forge" or software == "NeoForge":
             return rf'cd "{FPPath}\Servers\{Server}\Server" & run.bat -nogui'
         else:
@@ -1452,10 +1321,7 @@ if java_path:
     Sidebar = CTkFrame(GUI, fg_color="grey95")
     Sidebar.grid_propagate(False)
     Sidebar.configure(width=256)
-    Logo = ctk.CTkImage(Image.open(f'{FPPath}/assets/ForgePanel/FPlogo_512.png'), size=(50, 50))
-    FPTxt = CTkLabel(Sidebar, text="ForgePanel", font=("Futura", 30, "bold"), text_color="black")
-    FPImg = CTkLabel(Sidebar, image=Logo, text="")
-    Title = CTkLabel(Topbar, text=HomePageTitle, font=("Futura", 30, "bold"))
+    Title = CTkLabel(Topbar, text=translation.HomePageTitle, font=("Futura", 30, "bold"))
     ContentFrame = ctk.CTkFrame(GUI, fg_color="white")
 
     ContentFrame.grid_propagate(False)
@@ -1465,7 +1331,7 @@ if java_path:
     HomeButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/home.png'), size=(35, 35))
     HomeButton = CTkFrame(Sidebar, fg_color="grey92")
     HomeButtonImg = CTkLabel(HomeButton, image=HomeButtonIcon, text="")
-    HomeButtonTxt = CTkLabel(HomeButton, text=HomePageTitle, font=("Futura", 25))
+    HomeButtonTxt = CTkLabel(HomeButton, text=translation.HomePageTitle, font=("Futura", 25))
     HomeButton.bind('<Button-1>', HomePageLoad)
     HomeButtonImg.bind('<Button-1>', HomePageLoad)
     HomeButtonTxt.bind('<Button-1>', HomePageLoad)
@@ -1473,7 +1339,7 @@ if java_path:
     DashboardButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/dashboard.png'), size=(35, 35))
     DashboardButton = CTkFrame(Sidebar, fg_color="grey92")
     DashboardButtonImg = CTkLabel(DashboardButton, image=DashboardButtonIcon, text="")
-    DashboardButtonTxt = CTkLabel(DashboardButton, text=DashboardPageTitle, font=("Futura", 25))
+    DashboardButtonTxt = CTkLabel(DashboardButton, text=translation.DashboardPageTitle, font=("Futura", 25))
     DashboardButton.bind('<Button-1>', DashboardPageLoad)
     DashboardButtonImg.bind('<Button-1>', DashboardPageLoad)
     DashboardButtonTxt.bind('<Button-1>', DashboardPageLoad)
@@ -1481,7 +1347,7 @@ if java_path:
     ConsoleButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/terminal.png'), size=(35, 35))
     ConsoleButton = CTkFrame(Sidebar, fg_color="grey92")
     ConsoleButtonImg = CTkLabel(ConsoleButton, image=ConsoleButtonIcon, text="")
-    ConsoleButtonTxt = CTkLabel(ConsoleButton, text=ConsoleTitle, font=("Futura", 25))
+    ConsoleButtonTxt = CTkLabel(ConsoleButton, text=translation.ConsoleTitle, font=("Futura", 25))
     ConsoleButton.bind('<Button-1>', ConsolePageLoad)
     ConsoleButtonImg.bind('<Button-1>', ConsolePageLoad)
     ConsoleButtonTxt.bind('<Button-1>', ConsolePageLoad)
@@ -1490,7 +1356,7 @@ if java_path:
     ConfigButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/config.png'), size=(35, 35))
     ConfigButton = CTkFrame(Sidebar, fg_color="grey92")
     ConfigButtonImg = CTkLabel(ConfigButton, image=ConfigButtonIcon, text="")
-    ConfigButtonTxt = CTkLabel(ConfigButton, text=ConfigTitle, font=("Futura", 25))
+    ConfigButtonTxt = CTkLabel(ConfigButton, text=translation.ConfigTitle, font=("Futura", 25))
     ConfigButton.bind('<Button-1>', ConfigPageLoad)
     ConfigButtonImg.bind('<Button-1>', ConfigPageLoad)
     ConfigButtonTxt.bind('<Button-1>', ConfigPageLoad)
@@ -1498,7 +1364,7 @@ if java_path:
     ServerDirButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/folder.png'), size=(35, 35))
     ServerDirButton = CTkFrame(Sidebar, fg_color="grey92")
     ServerDirButtonImg = CTkLabel(ServerDirButton, image=ServerDirButtonIcon, text="")
-    ServerDirButtonTxt = CTkLabel(ServerDirButton, text=FolderTitle, font=("Futura", 25))
+    ServerDirButtonTxt = CTkLabel(ServerDirButton, text=translation.FolderTitle, font=("Futura", 25))
     ServerDirButton.bind('<Button-1>', OpenServerDir)
     ServerDirButtonImg.bind('<Button-1>', OpenServerDir)
     ServerDirButtonTxt.bind('<Button-1>', OpenServerDir)
@@ -1506,7 +1372,7 @@ if java_path:
     PlayersButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/player.png'), size=(35, 35))
     PlayersButton = CTkFrame(Sidebar, fg_color="grey92")
     PlayersButtonImg = CTkLabel(PlayersButton, image=PlayersButtonIcon, text="")
-    PlayersButtonTxt = CTkLabel(PlayersButton, text=PlayersTitle, font=("Futura", 25))
+    PlayersButtonTxt = CTkLabel(PlayersButton, text=translation.PlayersTitle, font=("Futura", 25))
     PlayersButton.bind('<Button-1>', PlayersPageLoad)
     PlayersButtonImg.bind('<Button-1>', PlayersPageLoad)
     PlayersButtonTxt.bind('<Button-1>', PlayersPageLoad)
@@ -1514,7 +1380,7 @@ if java_path:
     WhitelistButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/whitelist.png'), size=(35, 35))
     WhitelistButton = CTkFrame(Sidebar, fg_color="grey92")
     WhitelistButtonImg = CTkLabel(WhitelistButton, image=WhitelistButtonIcon, text="")
-    WhitelistButtonTxt = CTkLabel(WhitelistButton, text=WhitelistTitle, font=("Futura", 25))
+    WhitelistButtonTxt = CTkLabel(WhitelistButton, text=translation.WhitelistTitle, font=("Futura", 25))
     WhitelistButton.bind('<Button-1>', WhitelistPageLoad)
     WhitelistButtonImg.bind('<Button-1>', WhitelistPageLoad)
     WhitelistButtonTxt.bind('<Button-1>', WhitelistPageLoad)
@@ -1522,7 +1388,7 @@ if java_path:
     FeedbackButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/feedback.png'), size=(35, 35))
     FeedbackButton = CTkFrame(Sidebar, fg_color="grey92")
     FeedbackButtonImg = CTkLabel(FeedbackButton, image=FeedbackButtonIcon, text="")
-    FeedbackButtonTxt = CTkLabel(FeedbackButton, text=FeedbackButtonText, font=("Futura", 25))
+    FeedbackButtonTxt = CTkLabel(FeedbackButton, text=translation.FeedbackButtonText, font=("Futura", 25))
     FeedbackButton.bind('<Button-1>', FeedbackPageLoad)
     FeedbackButtonImg.bind('<Button-1>', FeedbackPageLoad)
     FeedbackButtonTxt.bind('<Button-1>', FeedbackPageLoad)
@@ -1530,7 +1396,7 @@ if java_path:
     SettingsButtonIcon = ctk.CTkImage(Image.open(f'{UIconPath}/settings.png'), size=(35, 35))
     SettingsButton = CTkFrame(Sidebar, fg_color="grey92")
     SettingsButtonImg = CTkLabel(SettingsButton, image=SettingsButtonIcon, text="")
-    SettingsButtonTxt = CTkLabel(SettingsButton, text=SettingsTitle, font=("Futura", 25))
+    SettingsButtonTxt = CTkLabel(SettingsButton, text=translation.SettingsTitle, font=("Futura", 25))
     SettingsButton.bind('<Button-1>', SettingsPageLoad)
     SettingsButtonImg.bind('<Button-1>', SettingsPageLoad)
     SettingsButtonTxt.bind('<Button-1>', SettingsPageLoad)
@@ -1538,14 +1404,14 @@ if java_path:
     VersionLabel = CTkLabel(Sidebar, text=f"ForgePanel {ProgramSettings['ForgePanelVersion']}", font=("Futura", 15))
     #Pages:
     #Server/Start Page
-    WelcomeTxt = CTkLabel(ContentFrame, text=Greeting, font=("Futura", 60, "bold"))
-    ChooseServerTxt = CTkLabel(ContentFrame, text=ChooseServerTXT, font=("Futura", 25))
+    WelcomeTxt = CTkLabel(ContentFrame, text=translation.Greeting, font=("Futura", 60, "bold"))
+    ChooseServerTxt = CTkLabel(ContentFrame, text=translation.ChooseServerTXT, font=("Futura", 25))
     ChooseServerMenu = ctk.CTkOptionMenu(ContentFrame, values=ServerList)
-    ChooseServerButton = CTkButton(ContentFrame, text=ChooseServerTXT, command=ChooseServerButtonAction)
-    CreateServerTxt = CTkLabel(ContentFrame, text=CreateServerTXT, font=("Futura", 25))
-    CreateServerEntry = ctk.CTkEntry(ContentFrame, placeholder_text=NameEntryTxt)
-    CreateServerButton = CTkButton(ContentFrame, text="+ "+CreateServerTXT, command=CreateServerButtonAction)
-    HelpHomeButton = CTkButton(ContentFrame, text=HelpButtonTXT, command=HelpSetUpButtonAction)
+    ChooseServerButton = CTkButton(ContentFrame, text=translation.ChooseServerTXT, command=ChooseServerButtonAction)
+    CreateServerTxt = CTkLabel(ContentFrame, text=translation.CreateServerTXT, font=("Futura", 25))
+    CreateServerEntry = ctk.CTkEntry(ContentFrame, placeholder_text=translation.NameEntryTxt)
+    CreateServerButton = CTkButton(ContentFrame, text="+ "+translation.CreateServerTXT, command=CreateServerButtonAction)
+    HelpHomeButton = CTkButton(ContentFrame, text=translation.HelpButtonTXT, command=HelpSetUpButtonAction)
 
     #Quick Setup Page:
     EasyPlayerLimitTitle = CTkLabel(ContentFrame, text="Player limit: 5", font=("Futura", 25))
@@ -1561,8 +1427,8 @@ if java_path:
     WhitelistSelectTitle = CTkLabel(ContentFrame, text="Whitelist", font=("Futura", 25))
     WhitelistSelect = ctk.CTkOptionMenu(ContentFrame, values=["False", "True"])
 
-    NextButton = ctk.CTkButton(ContentFrame, text=NextButtonTXT, command=QuickConfigButton)
-    HelpSetUpButton = ctk.CTkButton(ContentFrame, text=HelpButtonTXT, command=HelpSetUpButtonAction)
+    NextButton = ctk.CTkButton(ContentFrame, text=translation.NextButtonTXT, command=QuickConfigButton)
+    HelpSetUpButton = ctk.CTkButton(ContentFrame, text=translation.HelpButtonTXT, command=HelpSetUpButtonAction)
 
     #CreateServer(1)
     VersionBar = ctk.CTkTabview(GUI, fg_color="white", segmented_button_unselected_color="grey95", segmented_button_unselected_hover_color="grey90", text_color="black", segmented_button_fg_color="grey95")
@@ -1588,7 +1454,7 @@ if java_path:
             
             option_menu = ctk.CTkOptionMenu(frame, values=data["modloaders"][version])
             option_menu.grid(column=1, row=1, pady=[26,8])
-            button = CTkButton(frame, text=NextButtonTXT, command=lambda v=version, om=option_menu: Thread(target=CreateServer, args=(v, om.get())).start())
+            button = CTkButton(frame, text=translation.NextButtonTXT, command=lambda v=version, om=option_menu: Thread(target=CreateServer, args=(v, om.get())).start())
             button.grid(column=1, row=2, pady=[0,25])
     #Dashboard:
     '''    #RAM:
@@ -1614,23 +1480,23 @@ if java_path:
     ErrorTxt = CTkLabel(ContentFrame, text_color="red", text="")
 
     #CreateServer(2)
-    SetupIntroTxt = CTkLabel(ContentFrame, text=NewServerGreetingTxt, font=("Futura", 35))
-    SetupIntroButton1 = CTkButton(ContentFrame, text=QuickSetupTxt, font=("Futura", 20), command=lambda: SetupPageLoad("quick"))
-    SetupIntroButton2 = CTkButton(ContentFrame, text=AdvancedSetupTxt, font=("Futura", 20))
+    SetupIntroTxt = CTkLabel(ContentFrame, text=translation.NewServerGreetingTxt, font=("Futura", 35))
+    SetupIntroButton1 = CTkButton(ContentFrame, text=translation.QuickSetupTxt, font=("Futura", 20), command=lambda: SetupPageLoad("quick"))
+    SetupIntroButton2 = CTkButton(ContentFrame, text=translation.AdvancedSetupTxt, font=("Futura", 20))
 
-    OnlineModeChangeTitle = CTkLabel(ContentFrame, text=OnlineModeWarnTxt, text_color="red")
-    OnlineModeChangeButton = CTkButton(ContentFrame, text=ContinueAnyway, command=lambda: OnlineModeChange(False))
-    OnlineModeProceedButton = CTkButton(ContentFrame, text=NoOnlineModeProceed, command=lambda: OnlineModeChange(True))
+    OnlineModeChangeTitle = CTkLabel(ContentFrame, text=translation.OnlineModeWarnTxt, text_color="red")
+    OnlineModeChangeButton = CTkButton(ContentFrame, text=translation.ContinueAnyway, command=lambda: OnlineModeChange(False))
+    OnlineModeProceedButton = CTkButton(ContentFrame, text=translation.NoOnlineModeProceed, command=lambda: OnlineModeChange(True))
 
-    WhitelistChangeTitle = CTkLabel(ContentFrame, text=WhitelistInfoPageTxt, text_color="red")
-    WhitelistAddButton = CTkButton(ContentFrame, text=WhitelistAddPlayerTxt, command=lambda: WhitelistPageLoad())
-    WhitelistChangeButton = CTkButton(ContentFrame, text=DeactivateWhitelistButtonTxt, command=WhitelistChange)
+    WhitelistChangeTitle = CTkLabel(ContentFrame, text=translation.WhitelistInfoPageTxt, text_color="red")
+    WhitelistAddButton = CTkButton(ContentFrame, text=translation.WhitelistAddPlayerTxt, command=lambda: WhitelistPageLoad())
+    WhitelistChangeButton = CTkButton(ContentFrame, text=translation.DeactivateWhitelistButtonTxt, command=WhitelistChange)
     #Console Page:
-    CommandEntry = ctk.CTkEntry(ContentFrame, placeholder_text=EnterCommandPlaceholder, font=("Helvetica", 15))
+    CommandEntry = ctk.CTkEntry(ContentFrame, placeholder_text=translation.EnterCommandPlaceholder, font=("Helvetica", 15))
     ConsoleOutput = ctk.CTkTextbox(ContentFrame, wrap="word", fg_color="gray10", font=("Helvetica", 15), state="disabled")
     ConsoleOutput.tag_config("stderr", foreground="red")
     ConsoleOutput.tag_config("stdout", foreground="white")
-    SendButton = CTkButton(ContentFrame, text=SendCommandTxt, command=lambda: SendCommandToProcess(ServerProcess, CommandEntry.get()))
+    SendButton = CTkButton(ContentFrame, text=translation.SendCommandTxt, command=lambda: SendCommandToProcess(ServerProcess, CommandEntry.get()))
     StatusFrame = CTkFrame(Sidebar, fg_color="grey92")
     StatusFrame.grid_propagate(False)
     StatusFrame.configure(width=240, height=100)
@@ -1641,8 +1507,6 @@ if java_path:
     StartButton.grid(column=1, row=1, padx=10, pady=10)
     StopButton.grid(column=2, row=1, padx=(0,10), pady=10)
 
-    FPTxt.grid(column=2, row=0, padx=(10,15), pady=(15,0))
-    FPImg.grid(column=1, row=0, padx=(15,0), pady=(15,0))
     Title.grid(column=1, row=0, pady=(23,0), padx=(15,0))
     Topbar.grid(column=1,row=0, sticky="nesw")
     Sidebar.grid(column=0,row=0, rowspan=2, sticky="nsew")

@@ -20,7 +20,7 @@
  "DeactivateWhitelistButtonTxt": "Deactivate Whitelist",
  "NoOnlineModeProceed": "Proceed without Mojang Authentication",
  "NewServerGreetingTxt": "Welcome to your new Server",
- "HelpButtonTxt": "Help",
+ "HelpButtonTXT": "Help",
  "ConsoleTitle": "Console",
  "ServerVanillaDownloadText": "Lean back while we set up your Vanilla Server...",
  "ServerDownloadErrorText": "An error occured\nWe couldn't install your server",
@@ -55,4 +55,12 @@
  "UnbanTxt": "Unban",
  "PlayersTitle": "Players",
  "EnterCommandPlaceholder": "Enter a command...",
- "SendCommandTxt": "Send Command"}
+ "SendCommandTxt": "Send Command",
+ "StartServerButtonTxt": "Start",
+ "StopServerButtonTxt": "Stop",
+ "ForgePanelUpdateNotificationTitle": "ForgePanel Update",
+ "ForgePanelUpdateNotificationTxt1": "A new update just arrived!\nYou got the version ",
+ "ForgePanelUpdateNotificationTxt2": ".\nSee what's in version ",
+ "ForgePanelUpdateNotificationTxt3": ":\n",
+ "OpenUpdatePage": "Download update from GitHub",
+ "LaterButtonTxt": "Remind me later"}
