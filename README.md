@@ -9,9 +9,11 @@ Roadmap:
 
 ✅ - Beta Release b.1.0 (Will only contain Basic functions. Supported on launch are Forge, NeoForge and Vanilla)
 
-Modrinth Update b.2.0 (Adding support for .mrpack files, Modrinth Integration)
+🧑‍💻 - Modules/Fixes/Improvements/Mod Updates b.2.0 (Add your own server installers with modules, fixed Forge installer, faster support for new Minecraft versions, mods page, mod updates through Modrinth)
 
-Tunnel Update b.3.0 (Will add zrok and maybe ngrok support inside of the program)
+Increased Modrinth Update (Adding support for .mrpack files, Modrinth Integration)
+
+Tunnel Update (Will add zrok and maybe ngrok support to make servers reachable outside of home network)
 
 Modloader update(s) (Adding Fabric and Paper support. Maybe even more.)
 
